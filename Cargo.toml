@@ -1,5 +1,5 @@
 [package]
-name = "machine-rust"
+name = "subleq-rust"
 version = "0.1.0"
 edition = "2024"
 

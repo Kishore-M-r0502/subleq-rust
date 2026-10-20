@@ -1,23 +1,23 @@
-use crate::core::subleq::Memory;
+use crate::core::subleq::Computer;
 mod core;
 fn main(){
-    let mut machine = Memory::new();
+    let mut computer = Computer::initialize();
 
     // computes 5+3=8
-    machine.set(0, 10);
-    machine.set(1, 12);
-    machine.set(2, 3);
+    computer.load(0, 10);
+    computer.load(1, 12);
+    computer.load(2, 3);
 
-    machine.set(3, 12);
-    machine.set(4, 11);
-    machine.set(5, -1);
+    computer.load(3, 12);
+    computer.load(4, 11);
+    computer.load(5, -1);
 
-    machine.set(10, 5);
-    machine.set(11, 3);
-    machine.set(12, 0);
+    computer.load(10, 5);
+    computer.load(11, 3);
+    computer.load(12, 0);
 
-    machine.start();
-    println!("{:?}",machine.get(11));
+    computer.run();
+    
 
 
 }

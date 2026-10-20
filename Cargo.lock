@@ -3,5 +3,5 @@
 version = 4
 
 [[package]]
-name = "machine-rust"
+name = "subleq-rust"
 version = "0.1.0"
