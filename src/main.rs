@@ -1,3 +1,5 @@
+#[cfg(test)]
+mod tests;
 use crate::core::subleq::Computer;
 mod core;
 fn main(){
@@ -12,11 +14,11 @@ fn main(){
     computer.load(4, 11);
     computer.load(5, -1);
 
-    computer.load(10, 5);
-    computer.load(11, 3);
+    computer.load(10, -7);
+    computer.load(11, 12);
     computer.load(12, 0);
 
-    computer.run();
+    computer.next();
     
 
 
