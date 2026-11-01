@@ -53,3 +53,17 @@ fn test_readline_validation() {
         reader.readsec("end");
         assert!(matches!(reader.section, Section::None));
     }
+#[test]
+fn representtest() {
+    let mut reader = Reader::init();
+
+reader.readline("data:").unwrap();
+reader.readline("0 10 ;").unwrap();
+reader.readline("11 20 ;").unwrap();
+reader.readline("end").unwrap();
+
+reader.readline("code:").unwrap();
+reader.readline("1 11 20;;").unwrap();
+reader.readline("2 4 -1;;").unwrap();
+reader.readline("end").unwrap();
+}

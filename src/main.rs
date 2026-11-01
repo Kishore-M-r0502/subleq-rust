@@ -1,6 +1,7 @@
 #[cfg(test)]
 mod tests;
 use crate::core::subleq::Computer;
+use crate::core::io::read::Reader;
 mod core;
 fn main(){
     let mut computer = Computer::initialize();
@@ -20,6 +21,8 @@ fn main(){
 
     computer.next();
     
+
+
 
 
 }

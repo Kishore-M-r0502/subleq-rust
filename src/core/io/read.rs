@@ -50,26 +50,29 @@ impl Reader{
     pub fn readline(&mut self, line: &str) -> Result<(), ReadError> {
     let line = line.trim();
 
-    // Ignore blank lines and comments
     if line.is_empty() || line.starts_with('#') {
         return Ok(());
     }
 
-    // Handle section markers
     if self.readsec(line) {
         return Ok(());
     }
 
-    // Content outside a section is invalid
-    if self.section == Section::None {
-        return Err(ReadError::InvalidContext(self.section));
+    match self.section {
+        Section::None => Err(ReadError::InvalidContext(self.section)),
+
+        Section::Data => {
+            let entry = self.dataparse(line)?;
+            self.data.push(entry);
+            Ok(())
+        }
+
+        Section::Code => {
+            let instruction = self.iparse(line)?;
+            self.instructions.push(instruction);
+            Ok(())
+        }
     }
-
-    // Identify and validate the terminator
-    let term = self.read_terminator(line)?;
-    self.checkterm(term)?;
-
-    Ok(())
 }
 fn read_terminator(&self, line: &str) -> Result<Terminator,ReadError>{
     match line.trim(){
@@ -98,19 +101,25 @@ pub fn dataparse(&mut self, line: &str) -> Result<DataEntry, ReadError> {
                 return Err(ReadError::InvalidDataFormat);
             }
 
-            let value = match tokens[0].parse::<i32>() {
+            let address = match tokens[0].parse::<i32>() {
                 Ok(n) => n,
                 Err(_) => return Err(ReadError::InvalidNumber),
             };
 
-            let address = match tokens[1].parse::<i32>() {
+            let value = match tokens[1].parse::<i32>() {
                 Ok(n) => n,
                 Err(_) => return Err(ReadError::InvalidNumber),
             };
 
-            Ok(DataEntry { value, address })
+            Ok(DataEntry { address, value })
         }
-        None => Err(ReadError::MissingTerminator),
+        None => {
+    if line.ends_with(";;") {
+        Err(ReadError::InvalidTerminator(Terminator::Data))
+    } else {
+        Err(ReadError::MissingTerminator)
+    }
+}
     }
 }
 pub fn iparse(&mut self, line: &str) -> Result<Instruction, ReadError> {
@@ -139,7 +148,13 @@ pub fn iparse(&mut self, line: &str) -> Result<Instruction, ReadError> {
 
             Ok(Instruction { a, b, c })
         }
-        None => Err(ReadError::MissingTerminator),
+        None => {
+            if line.ends_with(';') {
+        Err(ReadError::InvalidTerminator(Terminator::Data))
+    } else {
+        Err(ReadError::MissingTerminator)
     }
+    }
+}
 }
 }
