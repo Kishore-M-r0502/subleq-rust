@@ -110,15 +110,15 @@ pub fn dataparse(&mut self, line: &str) -> Result<DataEntry, ReadError> {
                 return Err(ReadError::InvalidDataFormat);
             }
 
-            let address = match tokens[0].parse::<i32>() {
-                Ok(n) => n,
-                Err(_) => return Err(ReadError::InvalidNumber),
-            };
+            let value = match tokens[0].parse::<i32>() {
+    Ok(n) => n,
+    Err(_) => return Err(ReadError::InvalidNumber),
+};
 
-            let value = match tokens[1].parse::<i32>() {
-                Ok(n) => n,
-                Err(_) => return Err(ReadError::InvalidNumber),
-            };
+let address = match tokens[1].parse::<i32>() {
+    Ok(n) => n,
+    Err(_) => return Err(ReadError::InvalidNumber),
+};
 
             Ok(DataEntry { address, value })
         }
