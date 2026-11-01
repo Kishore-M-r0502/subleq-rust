@@ -1,16 +1,18 @@
 // subleq.rs at src/core/subleq.rs
 use crate::core::tracer::trace::{State, Tracer};
-pub const MEMORY_MAX:usize=256;
 pub const START_VALUE:i32=0;
 #[derive(Debug)]
 pub struct Computer{
-    memory:[i32;MEMORY_MAX],
+    memory:Vec<i32>,
     pc:isize,
 }
 
 impl Computer{
-    pub fn initialize()->Self{
-        Self { memory: [START_VALUE;MEMORY_MAX] ,pc:0}
+    pub fn initialize(memory:usize)->Self{
+        Self { memory: vec![START_VALUE;memory],pc:0}
+    }
+    pub fn checkmem(&self)->usize{
+        return self.memory.len()
     }
     
 
@@ -26,7 +28,7 @@ pub fn clear(&mut self,loc:usize){
 pub fn next(&mut self)->isize{
     let mut ic=0;
     self.header();
-    while self.pc>=0 && self.pc+2 <MEMORY_MAX as isize{
+    while self.pc>=0 && self.pc+2 <self.memory.len() as isize{
     let a=self.memory[self.pc as usize] as usize;
         let b=self.memory[(self.pc+1) as usize] as usize;
         let c=self.memory[(self.pc+2) as usize] as isize;

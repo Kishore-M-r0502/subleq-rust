@@ -13,6 +13,7 @@ pub struct Reader{
     pub section:Section,
     data:Vec<DataEntry>,
     instructions:Vec<Instruction>,
+    memsize: Option<usize>,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -23,8 +24,12 @@ pub enum Terminator {
 
 impl Reader{
     pub fn init()->Self{
-        Self { row: 1, col: 1 , section: Section::None ,data:Vec::new(),instructions:Vec::new()}
+        Self { row: 1, col: 1 , section: Section::None ,data:Vec::new(),instructions:Vec::new(),memsize:None}
     }
+
+    pub fn memory_size(&self) -> usize {
+    self.memsize.unwrap_or(256)
+}
     pub fn updatesec(&mut self,sec:Section){
         self.section=sec;
     }
@@ -53,6 +58,10 @@ impl Reader{
     if line.is_empty() || line.starts_with('#') {
         return Ok(());
     }
+
+    if self.read_memory(line)? {
+    return Ok(());
+}
 
     if self.readsec(line) {
         return Ok(());
@@ -156,5 +165,30 @@ pub fn iparse(&mut self, line: &str) -> Result<Instruction, ReadError> {
     }
     }
 }
+}
+
+pub fn read_memory(&mut self, line: &str) -> Result<bool, ReadError> {
+    match line.strip_prefix("memory:") {
+        Some(size) => {
+            let size = match size.trim().parse::<usize>() {
+                Ok(n) => n,
+                Err(_) => return Err(ReadError::InvalidMemorySize),
+            };
+
+            self.memsize = Some(size);
+            Ok(true)
+        }
+        None => Ok(false),
+    }
+}
+
+pub fn data(&self) -> &[DataEntry]{
+    return &self.data;
+}
+pub fn instructions(&self) -> &[Instruction]{
+    return &self.instructions;
+}
+pub fn memory(&self) -> Option<usize>{
+    return self.memsize;
 }
 }

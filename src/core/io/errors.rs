@@ -7,5 +7,6 @@ pub enum ReadError{
     MissingTerminator,
     InvalidDataFormat,
     InvalidNumber,
-    InvalidInstructionFormat
+    InvalidInstructionFormat,
+    InvalidMemorySize
 }
